@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>소나기예배팀 7일 미션</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-top:#f4f1ea;
+      --bg-bottom:#eef0f3;
+      --ink:#262321;
+      --ink-soft:#5c5650;
+      --card:#fffdf9;
+      --main:#5b6e5a;
+      --main-dark:#404f3f;
+      --accent:#b8845b;
+      --accent-soft:#f1e3d2;
+      --line:#e6e1d6;
+      --ok:#5b7c5e;
+      --ok-bg:#e7efe4;
+      --bad:#a8554a;
+      --bad-bg:#f6e6e2;
+      --shadow:0 10px 28px rgba(64,79,63,.10);
+      --shadow-sm:0 4px 14px rgba(64,79,63,.08);
+    }
+    * { box-sizing:border-box; }
+    body {
+      margin:0;
+      font-family:-apple-system,BlinkMacSystemFont,'Apple SD Gothic Neo','Noto Sans KR',sans-serif;
+      background:linear-gradient(180deg,var(--bg-top),var(--bg-bottom));
+      color:var(--ink);
+      letter-spacing:-0.1px;
+    }
+    .wrap { max-width:560px; margin:0 auto; padding:22px 16px 52px; }
+
+    .hero {
+      background:linear-gradient(135deg,var(--main-dark),var(--main));
+      color:#f7f5ef;
+      padding:28px 22px;
+      border-radius:24px;
+      box-shadow:var(--shadow);
+      position:relative;
+      overflow:hidden;
+    }
+    .hero::after {
+      content:'';
+      position:absolute; right:-30px; top:-30px;
+      width:140px; height:140px;
+      background:radial-gradient(circle,rgba(255,255,255,.10),transparent 70%);
+    }
+    .hero-eyebrow {
+      display:inline-flex; align-items:center; gap:6px;
+      font-size:11px; font-weight:700; letter-spacing:2px; text-transform:uppercase;
+      color:#dfe8da; opacity:.8; margin-bottom:10px;
+    }
+    .hero-eyebrow::before { content:''; width:14px; height:1px; background:#dfe8da; opacity:.6; }
+    .hero h1 {
+      margin:0 0 10px; font-size:27px; line-height:1.3; font-weight:800; letter-spacing:-0.5px;
+      font-family:'Noto Serif KR','Apple SD Gothic Neo',serif;
+    }
+    .hero h1 .accent { color:#e9d2a8; }
+    .hero p {
+      margin:0; opacity:.8; font-size:12.5px; font-weight:600; letter-spacing:1px;
+      display:flex; align-items:center; gap:7px; flex-wrap:wrap;
+    }
+    .hero p .dot { width:3px; height:3px; border-radius:50%; background:currentColor; opacity:.6; }
+
+    .box {
+      margin-top:16px;
+      background:var(--card);
+      padding:18px;
+      border-radius:20px;
+      box-shadow:var(--shadow-sm);
+      border:1px solid var(--line);
+    }
+
+    label { display:block; font-weight:700; margin:14px 0 7px; font-size:14px; color:var(--ink-soft); }
+    label:first-child { margin-top:0; }
+
+    select {
+      width:100%; border:1.5px solid var(--line); border-radius:14px; padding:13px 14px;
+      font-size:15px; font-weight:700; outline:none; background:#fff; color:var(--ink);
+      appearance:none; -webkit-appearance:none;
+      background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='9'%3E%3Cpath d='M1 1l6 6 6-6' stroke='%235c5650' stroke-width='2' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+      background-repeat:no-repeat; background-position:right 16px center;
+    }
+    select:focus { border-color:var(--main); }
+
+    .bar { height:10px; background:#eceae3; border-radius:99px; overflow:hidden; margin-top:14px; }
+    .bar > div { height:100%; width:0%; background:linear-gradient(90deg,var(--accent),var(--main)); border-radius:99px; transition:.35s; }
+    .progress-text { display:flex; justify-content:space-between; margin-top:9px; font-weight:700; font-size:13px; color:var(--ink-soft); }
+    .progress-text span:last-child { color:var(--main-dark); font-weight:800; }
+
+    .tabs { display:grid; grid-template-columns:repeat(7,1fr); gap:6px; margin:18px 0; }
+    .tab {
+      border:1.5px solid var(--line); padding:10px 0; border-radius:13px; background:var(--card);
+      font-weight:800; font-size:14px; color:#a39d92; cursor:pointer; transition:.2s;
+    }
+    .tab.active { background:var(--main-dark); color:#fff; border-color:var(--main-dark); }
+    .tab.done { background:var(--ok-bg); color:var(--ok); border-color:#cfe0cb; }
+    .tab.active.done { background:var(--main-dark); color:#fff; }
+
+    .card { display:none; background:var(--card); border-radius:22px; padding:22px; box-shadow:var(--shadow); border:1px solid var(--line); }
+    .card.active { display:block; }
+    .day-title { font-size:21px; font-weight:800; margin:0 0 10px; letter-spacing:-0.3px; }
+    .mission {
+      background:var(--accent-soft); color:#5c4326; padding:14px 16px; border-radius:16px;
+      line-height:1.6; margin-bottom:18px; font-size:14.5px; font-weight:600;
+      border-left:4px solid var(--accent);
+    }
+
+    textarea {
+      width:100%; border:1.5px solid var(--line); border-radius:14px; padding:13px 14px;
+      font-size:15px; outline:none; resize:vertical; min-height:54px; background:#fdfcf9;
+      color:var(--ink); font-family:inherit; line-height:1.5;
+    }
+    textarea:focus { border-color:var(--main); background:#fff; }
+    textarea::placeholder { color:#b9b3a7; }
+
+    .checkline {
+      display:flex; align-items:center; gap:10px; background:#f6f4ee; padding:14px 16px;
+      border-radius:14px; margin-top:16px; font-weight:700; font-size:14.5px; border:1.5px solid var(--line);
+    }
+    input[type=checkbox] { width:20px; height:20px; accent-color:var(--main-dark); }
+
+    .btns { display:grid; gap:10px; margin-top:18px; }
+    button.big {
+      border:0; border-radius:15px; padding:15px; font-size:15px; font-weight:800; cursor:pointer;
+      transition:.15s; letter-spacing:-0.1px;
+    }
+    button.big:active { transform:scale(.98); }
+    .share { background:var(--main-dark); color:#fff; }
+    .copy { background:var(--accent-soft); color:#5c4326; }
+    .subbtn { background:#fff; color:var(--main-dark); border:1.5px solid var(--main-dark) !important; }
+    .reset { background:var(--bad-bg); color:var(--bad); }
+
+    .status-title { display:flex; justify-content:space-between; gap:10px; align-items:center; font-weight:800; font-size:16px; margin-bottom:12px; }
+    .pill { display:inline-flex; align-items:center; border-radius:999px; padding:6px 12px; font-weight:800; font-size:12.5px; }
+    .pill.ok { background:var(--ok-bg); color:var(--ok); }
+    .pill.bad { background:var(--bad-bg); color:var(--bad); }
+
+    .chips { display:flex; flex-wrap:wrap; gap:7px; }
+    .chip { border-radius:999px; padding:8px 13px; font-weight:700; font-size:13.5px; background:#f1efe8; color:var(--ink-soft); }
+    .chip.done { background:var(--ok-bg); color:var(--ok); }
+    .chip.miss { background:var(--bad-bg); color:var(--bad); }
+
+    .summary-grid { display:grid; gap:8px; }
+    .member-row {
+      display:grid; grid-template-columns:64px 1fr auto; align-items:center; gap:10px;
+      font-weight:700; font-size:14px; padding:10px 12px; border-radius:14px; background:#f8f7f2;
+      border:1px solid var(--line);
+    }
+    .mini-days { display:flex; gap:3px; }
+    .mini { width:19px; height:19px; border-radius:6px; display:flex; align-items:center; justify-content:center; font-size:10.5px; background:#e8e5db; color:#9a9384; font-weight:700; }
+    .mini.on { background:var(--main); color:#fff; }
+
+    .guide { margin-top:18px; background:var(--card); border-radius:20px; padding:18px; color:var(--ink-soft); line-height:1.65; font-size:13.5px; border:1px solid var(--line); }
+    .guide b { color:var(--ink); }
+
+    .toast {
+      position:fixed; left:50%; bottom:24px; transform:translateX(-50%);
+      background:var(--ink); color:#fff; padding:12px 18px; border-radius:999px;
+      opacity:0; pointer-events:none; transition:.25s; font-weight:700; font-size:13.5px; z-index:10;
+    }
+    .toast.show { opacity:1; bottom:34px; }
+
+    .complete {
+      display:none; margin-top:16px; background:linear-gradient(135deg,var(--accent-soft),#fff7eb);
+      border:1.5px solid #e6cda5; border-radius:20px; padding:20px; text-align:center;
+      font-weight:800; font-size:14.5px; color:#5c4326; line-height:1.6;
+    }
+    .complete.show { display:block; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <section class="hero">
+      <div class="hero-eyebrow">WORSHIP TEAM</div>
+      <h1>SONAGI <span class="accent">WEEK</span></h1>
+      <p>소통<span class="dot"></span>나눔<span class="dot"></span>기쁨으로 함께 세워지는 7일</p>
+    </section>
+
+    <section class="box">
+      <label style="margin-top:0">🙋 인증 멤버 선택</label>
+      <select id="memberSelect"></select>
+      <div class="bar"><div id="memberBar"></div></div>
+      <div class="progress-text"><span id="memberCount">0 / 7 완료</span><span id="memberPercent">0%</span></div>
+    </section>
+
+    <div class="tabs" id="tabs"></div>
+
+    <section class="box" id="dailyStatus"></section>
+
+    <div id="cards"></div>
+
+    <section class="box">
+      <div class="status-title">📊 전체 멤버 완료 현황 <span class="pill" id="totalPill">0%</span></div>
+      <div class="summary-grid" id="memberSummary"></div>
+      <div class="btns">
+        <button class="big subbtn" onclick="copyIncomplete()">📋 미완료 멤버 복사</button>
+        <button class="big share" onclick="shareIncomplete()">💬 미완료 현황 카톡 공유</button>
+      </div>
+    </section>
+
+    <div class="complete" id="complete">🏆 선택한 멤버 7일 미션 완료!<br>하나님께 더 가까이 나아가는 소나기예배팀을 축복합니다.</div>
+
+    <section class="guide">
+      <b>⏰ 인증 안내</b><br>
+      매일 밤 10시까지 단톡방 인증<br>
+      멤버별 완료 여부가 저장되고, 오늘 DAY의 미완료 멤버가 자동으로 표시됩니다.<br>
+      공유창이 안 뜨면 “복사” 후 카톡방에 붙여넣으세요.
+    </section>
+  </div>
+  <div class="toast" id="toast">복사되었습니다</div>
+
+<script>
+const members = ['강산','김도연','김현희','옥민석','한수영','한수미','한승규'];
+let selectedMember = localStorage.getItem('sonagi_member') || members[0];
+let current = Number(localStorage.getItem('sonagi_current') || 0);
+let data = JSON.parse(localStorage.getItem('sonagi_member_data') || '{}');
+
+const oldData = JSON.parse(localStorage.getItem('sonagi_data') || 'null');
+if (oldData && !data[selectedMember]) {
+  data[selectedMember] = oldData;
+  localStorage.setItem('sonagi_member_data', JSON.stringify(data));
+}
+
+const missions = [
+  {emoji:'📖', title:'말씀', desc:'성경 읽기 + 은혜 받은 말씀 1구절 기록', fields:['오늘 읽은 말씀','은혜 받은 말씀 1구절']},
+  {emoji:'🙏', title:'기도', desc:'기도제목 1가지 나누기\n팀원들 기도제목으로 기도하기', fields:['오늘의 기도제목','팀원 기도제목을 위해 기도하며 느낀 점']},
+  {emoji:'🎵', title:'찬양', desc:'찬양 1곡 부르며 가사 묵상하기', fields:['오늘 묵상한 찬양','가사 묵상 한 줄']},
+  {emoji:'👣', title:'순종', desc:'하나님이 생각나게 하신 한 가지 실천하기', fields:['오늘 실천한 순종','느낀 점']},
+  {emoji:'❤️', title:'감사', desc:'감사한 일 2가지 적기', fields:['감사한 일 ①','감사한 일 ②']},
+  {emoji:'🤝', title:'섬김', desc:'누군가를 돕거나 섬기기', fields:['누구를 섬겼나요?','어떻게 섬겼나요?']},
+  {emoji:'🔥', title:'예배', desc:'주일예배 일찍 와서 예배 준비하기', fields:['예배를 위해 준비한 것','예배 전 기도 제목']}
+];
+
+function getMemberData(name){ data[name] ??= {}; return data[name]; }
+function getDayData(name, day){ const md=getMemberData(name); md[day] ??= {fields:[],done:false}; return md[day]; }
+function save(){ localStorage.setItem('sonagi_member_data', JSON.stringify(data)); localStorage.setItem('sonagi_member', selectedMember); localStorage.setItem('sonagi_current', current); updateAll(); }
+function el(id){ return document.getElementById(id); }
+function toast(msg='복사되었습니다'){ const t=el('toast'); t.textContent=msg; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),1600); }
+
+function render(){
+  el('memberSelect').innerHTML = members.map(name=>`<option value="${name}" ${name===selectedMember?'selected':''}>${name}</option>`).join('');
+  el('memberSelect').onchange = e => { selectedMember = e.target.value; save(); render(); toast(selectedMember + '님으로 선택되었습니다'); };
+
+  const tabs = el('tabs'), cards = el('cards'); tabs.innerHTML=''; cards.innerHTML='';
+  missions.forEach((m,i)=>{
+    const tab=document.createElement('button'); tab.className='tab'; tab.textContent=i+1; tab.onclick=()=>{current=i; save(); render();}; tabs.appendChild(tab);
+    const dayData = getDayData(selectedMember, i);
+    const card=document.createElement('section'); card.className='card';
+    card.innerHTML=`
+      <h2 class="day-title">DAY ${i+1} ${m.emoji} ${m.title}</h2>
+      <div class="mission">${m.desc.replace(/\n/g,'<br>')}</div>
+      ${m.fields.map((f,j)=>`<label>${f}</label><textarea data-day="${i}" data-field="${j}" placeholder="${selectedMember}님의 기록을 입력하세요">${dayData.fields[j]||''}</textarea>`).join('')}
+      <label class="checkline"><input type="checkbox" data-done="${i}" ${dayData.done?'checked':''}> ${selectedMember} 완료 인증</label>
+      <div class="btns">
+        <button class="big share" onclick="shareDay(${i})">💬 카톡으로 인증 공유하기</button>
+        <button class="big copy" onclick="copyDay(${i})">📋 인증 문구 복사</button>
+      </div>`;
+    cards.appendChild(card);
+  });
+  document.querySelectorAll('.tab')[current].classList.add('active');
+  document.querySelectorAll('.card')[current].classList.add('active');
+  document.querySelectorAll('textarea').forEach(x=>x.oninput=e=>{ const d=e.target.dataset.day, f=e.target.dataset.field; getDayData(selectedMember,d).fields[f]=e.target.value; save(); });
+  document.querySelectorAll('[data-done]').forEach(x=>x.onchange=e=>{ const d=e.target.dataset.done; getDayData(selectedMember,d).done=e.target.checked; save(); render(); });
+  updateAll();
+}
+
+function memberDoneCount(name){ return missions.filter((_,i)=>getDayData(name,i).done).length; }
+function dayDoneMembers(day){ return members.filter(name=>getDayData(name,day).done); }
+function dayMissingMembers(day){ return members.filter(name=>!getDayData(name,day).done); }
+
+function updateAll(){
+  const done = memberDoneCount(selectedMember);
+  const pct = Math.round(done/7*100);
+  el('memberBar').style.width=pct+'%';
+  el('memberCount').textContent=`${selectedMember} ${done} / 7 완료`;
+  el('memberPercent').textContent=pct+'%';
+  document.querySelectorAll('.tab').forEach((t,i)=>{ t.classList.toggle('done', !!getDayData(selectedMember,i).done); });
+  el('complete').classList.toggle('show', done===7);
+  renderDailyStatus();
+  renderSummary();
+}
+
+function renderDailyStatus(){
+  const m=missions[current];
+  const doneList=dayDoneMembers(current);
+  const missList=dayMissingMembers(current);
+  el('dailyStatus').innerHTML = `
+    <div class="status-title">DAY ${current+1} ${m.emoji} ${m.title} 현황 <span class="pill ${missList.length?'bad':'ok'}">미완료 ${missList.length}명</span></div>
+    <div style="font-weight:700;margin:12px 0 7px;font-size:13.5px;color:var(--ink-soft)">✅ 완료 멤버</div>
+    <div class="chips">${doneList.length ? doneList.map(n=>`<span class="chip done">${n}</span>`).join('') : '<span class="chip">아직 없음</span>'}</div>
+    <div style="font-weight:700;margin:14px 0 7px;font-size:13.5px;color:var(--ink-soft)">❌ 미완료 멤버</div>
+    <div class="chips">${missList.length ? missList.map(n=>`<span class="chip miss">${n}</span>`).join('') : '<span class="chip done">전원 완료 🎉</span>'}</div>`;
+}
+
+function renderSummary(){
+  const totalDone = members.reduce((sum,n)=>sum+memberDoneCount(n),0);
+  const totalPct = Math.round(totalDone/(members.length*7)*100);
+  el('totalPill').textContent = `${totalPct}%`;
+  el('totalPill').className = `pill ${totalPct===100?'ok': totalPct>0?'':'bad'}`;
+  el('memberSummary').innerHTML = members.map(name=>{
+    const cnt=memberDoneCount(name);
+    const minis=missions.map((_,i)=>`<span class="mini ${getDayData(name,i).done?'on':''}">${i+1}</span>`).join('');
+    return `<div class="member-row"><span>${name}</span><div class="mini-days">${minis}</div><span>${cnt}/7</span></div>`;
+  }).join('');
+}
+
+function makeText(i){
+  const m=missions[i], dd=getDayData(selectedMember,i), fs=dd.fields||[];
+  let lines=[`🌧️ 소나기예배팀 7일 미션 인증`, `🙋 멤버: ${selectedMember}`, `DAY ${i+1} ${m.emoji} ${m.title}`, ``];
+  m.fields.forEach((f,j)=>lines.push(`✅ ${f}: ${fs[j]||'작성 전'}`));
+  lines.push('', dd.done?'☑️ 완료 인증':'⬜ 아직 진행 중', '', '⏰ 매일 밤 10시까지 단톡방 인증');
+  return lines.join('\n');
+}
+function makeIncompleteText(){
+  const m=missions[current], miss=dayMissingMembers(current), done=dayDoneMembers(current);
+  return [`🌧️ 소나기예배팀 7일 미션 현황`, `DAY ${current+1} ${m.emoji} ${m.title}`, '', `✅ 완료: ${done.length ? done.join(', ') : '없음'}`, `❌ 미완료: ${miss.length ? miss.join(', ') : '전원 완료 🎉'}`, '', '⏰ 오늘 밤 10시까지 단톡방 인증'].join('\n');
+}
+async function copyText(text,msg){ try{ await navigator.clipboard.writeText(text); toast(msg || '복사되었습니다'); }catch(e){ toast('복사 실패'); } }
+async function copyDay(i){ copyText(makeText(i),'인증 문구가 복사되었습니다'); }
+async function shareDay(i){ const text=makeText(i); if(navigator.share){ try{ await navigator.share({title:'소나기예배팀 7일 미션 인증', text}); return; }catch(e){} } copyText(text,'공유창이 안 떠서 문구를 복사했어요'); }
+async function copyIncomplete(){ copyText(makeIncompleteText(),'미완료 멤버 현황이 복사되었습니다'); }
+async function shareIncomplete(){ const text=makeIncompleteText(); if(navigator.share){ try{ await navigator.share({title:'소나기예배팀 미완료 현황', text}); return; }catch(e){} } copyText(text,'공유창이 안 떠서 현황을 복사했어요'); }
+
+render();
+</script>
+</body>
+</html>
